@@ -2,11 +2,9 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 
-import Link from "next/link";
 import { Button, Skeleton, Table } from "antd";
-import moment from "moment";
-import { BiEdit, BiTrash } from "react-icons/bi";
-import { useExpeditions } from "@/app/(frontend)/useExpeditions";
+import { useBookings } from "./useBookings";
+import { FcCancel } from "react-icons/fc";
 
 export default function ExpeditionHome() {
 	const {
@@ -14,11 +12,10 @@ export default function ExpeditionHome() {
 		isLoading,
 		currentPage,
 		handlePageChange,
-		keyword,
-		setKeyword,
 		setLimit,
 		setCurrentPage,
-	} = useExpeditions();
+		cancelFromBook,
+	} = useBookings();
 	if (isLoading) {
 		return (
 			<div className="bg-gray-100 border rounded py-5 px-2">
@@ -27,11 +24,17 @@ export default function ExpeditionHome() {
 			</div>
 		);
 	}
+
 	const listColumn = [
 		{
 			title: "Name",
 			dataIndex: "name",
 			key: "name",
+			render: (value: any, record: any) => (
+				<span className="flex gap-1 items-center">
+					{record?.expedition?.name}
+				</span>
+			),
 		},
 		{
 			title: "Price",
@@ -39,7 +42,7 @@ export default function ExpeditionHome() {
 			key: "price",
 			render: (value: any, record: any) => (
 				<span className="flex gap-1 items-center">
-					{parseFloat(value).toFixed(2)}
+					{parseFloat(record?.expedition?.price).toFixed(2)}
 				</span>
 			),
 		},
@@ -47,47 +50,28 @@ export default function ExpeditionHome() {
 			title: "Destination",
 			dataIndex: "destination",
 			key: "destination",
-		},
-		{
-			title: "Available Seats",
-			dataIndex: "availableSeats",
-			key: "availableSeats",
 			render: (value: any, record: any) => (
 				<span className="flex gap-1 items-center">
-					{parseFloat(value).toFixed(2)}
+					{record?.expedition?.destination}
 				</span>
 			),
 		},
 		{
-			title: "Total Seats",
-			dataIndex: "totalSeats",
-			key: "totalSeats",
-			render: (value: any, record: any) => (
-				<span className="flex gap-1 items-center">
-					{parseFloat(value).toFixed(2)}
-				</span>
-			),
+			title: "Status",
+			dataIndex: "status",
+			key: "status",
+			render: (value: string, record: any) => <span>{value}</span>,
 		},
 		{
-			title: "Date",
-			dataIndex: "createdAt",
-			key: "createdAt",
-			render: (value: string, record: any) => (
-				<span>{moment(record.date).format("DD-MM-YY")}</span>
-			),
-		},
-		{
-			title: "Action",
+			title: "Cancel",
 			key: "action",
 			render: (value: string, record: any) => (
 				<div className="flex gap-2">
-					<Link href={`/dashboard/update/${record?._id}`}>
-						<Button className="hover:text-gray-700 border-orange-500 text-orange-500">
-							<BiEdit className="h-4 w-4" />
-						</Button>
-					</Link>
-					<Button className="hover:text-red-700 border-green-500 text-green-500">
-						<BiTrash className="h-4 w-4" />
+					<Button
+						className="hover:text-red-700 border-green-500 text-green-500"
+						onClick={(e) => cancelFromBook(e, record._id)}
+					>
+						<FcCancel className="h-4 w-4" />
 					</Button>
 				</div>
 			),
@@ -98,25 +82,7 @@ export default function ExpeditionHome() {
 		<div className="grid grid-cols-1">
 			<div className="bg-gray-100 border rounded pt-5">
 				<div className="p-4 space-y-4 sm:space-y-0 sm:flex sm:items-center sm:justify-between">
-					<h2 className="text-lg font-semibold text-black">All Expedition</h2>
-
-					<div className="flex flex-col space-y-2 sm:flex-row sm:space-y-0 sm:space-x-2 sm:items-center">
-						<input
-							className="w-full sm:w-auto rounded-lg h-9 border-slate-300 text-slate-700 px-2"
-							type="search"
-							placeholder="Search name"
-							name="keyword"
-							value={keyword || ""}
-							onChange={(e) => setKeyword(e.target.value)}
-						/>
-
-						<Link
-							href="/dashboard/create"
-							className="text-sm py-1 px-2 font-normal text-white uppercase bg-green-600 rounded-md text-center sm:whitespace-nowrap"
-						>
-							Create New
-						</Link>
-					</div>
+					<h2 className="text-lg font-semibold text-black">All My Bookings</h2>
 				</div>
 				<Table
 					className="bg-transparent overflow-x-auto"

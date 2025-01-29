@@ -30,7 +30,7 @@ export default function useAuth() {
 		try {
 			const response = await http.get("me");
 			if (response.data?.data) {
-				setUser(response.data.data); // Safely set user only if data exists
+				setUser(response.data.data);
 			}
 		} catch (error) {
 			console.error("Fetch user failed", error);
@@ -103,6 +103,32 @@ export default function useAuth() {
 		}
 	};
 
+	const verifyToken = async (token: string): Promise<LoginResponse> => {
+		try {
+			const response = await http.post(
+				`${process.env.NEXT_PUBLIC_API_URI}verify`,
+				{ token },
+				{
+					headers: {
+						"Access-Control-Allow-Origin": "*",
+						"Content-Type": "application/json",
+					},
+				},
+			);
+			const restoken = response.data.token;
+			if (restoken) {
+				localStorage.setItem("accessToken", restoken);
+				http.defaults.headers.common["Authorization"] = `Bearer ${restoken}`;
+				router.push("/");
+				return { response: { data: { success: true } } };
+			}
+			return { message: "Invalid response from server." };
+		} catch (error) {
+			console.error("Login failed", error);
+			return { message: "Login failed" };
+		}
+	};
+
 	const logout = () => {
 		localStorage.removeItem("accessToken");
 		setUser(null);
@@ -110,5 +136,5 @@ export default function useAuth() {
 		router.push("/login");
 	};
 
-	return { user, loading, register, login, logout };
+	return { user, loading, register, login, logout, verifyToken };
 }

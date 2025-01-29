@@ -25,7 +25,7 @@ export default function ProtectedAdminRoute({
 		}
 	}, [user, router]);
 
-	if (loading) {
+	if (loading || user?.role !== "admin") {
 		return (
 			<div className="h-screen flex justify-center items-center">
 				<Spin size="large" />
@@ -33,7 +33,7 @@ export default function ProtectedAdminRoute({
 		);
 	}
 
-	if (!user?.email) {
+	if (!user?.email || user?.role !== "admin") {
 		return null;
 	}
 

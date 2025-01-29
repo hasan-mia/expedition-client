@@ -4,6 +4,7 @@ import { useEffect, useState, FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import { Alert, Spin } from "antd";
 import useAuth, { LoginResponse } from "../hooks/useAuth";
+import { toast } from "react-toastify";
 
 const LoginPage = () => {
 	const router = useRouter();
@@ -36,14 +37,17 @@ const LoginPage = () => {
 			const res: LoginResponse = await login(email, password);
 
 			if (res?.response?.data?.success) {
+				toast.success("Login success");
 				router.push("/");
 			} else {
 				setError(
 					res?.response?.data?.message || res?.message || "Unknown error",
 				);
+				toast.error("Invalid email or password");
 			}
 		} catch (err) {
 			setError("An error occurred during login");
+			toast.error("Invalid email or password");
 		}
 
 		setIsLoading(false);

@@ -15,7 +15,13 @@ export default function ProtectedRoute({ children }: { children: ReactNode }) {
 		}
 	}, [loading, user, router]);
 
-	if (loading) {
+	useEffect(() => {
+		if (user && user?.role !== "user") {
+			router.replace("/");
+		}
+	}, [user, router]);
+
+	if (loading || user?.role !== "user") {
 		return (
 			<div className="h-screen flex justify-center items-center">
 				<Spin size="large" />
@@ -23,7 +29,7 @@ export default function ProtectedRoute({ children }: { children: ReactNode }) {
 		);
 	}
 
-	if (!user?.email) {
+	if (!user?.email || user?.role !== "user") {
 		return null;
 	}
 

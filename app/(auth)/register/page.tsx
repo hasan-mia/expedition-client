@@ -4,6 +4,7 @@ import { useEffect, useState, FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import { Alert, Spin } from "antd";
 import useAuth, { LoginResponse } from "../hooks/useAuth"; // Make sure to import LoginResponse
+import { toast } from "react-toastify";
 
 const RegisterPage = () => {
 	const router = useRouter();
@@ -41,11 +42,14 @@ const RegisterPage = () => {
 				setError(
 					res?.response?.data?.message || res?.message || "Unknown error",
 				);
+				toast.error("Already registered");
 			} else {
 				setSuccess(res.response.data.message || "Registration successful!");
+				toast.success("A link sent to your email");
 			}
 		} catch (err) {
 			setError("An unexpected error occurred during registration");
+			toast.error("Invalid email or password");
 		}
 
 		setIsLoading(false);

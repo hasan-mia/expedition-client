@@ -11,6 +11,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { AxiosError } from "axios";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { toast } from "react-toastify";
 
 export function useExpeditions() {
 	const queryClient = useQueryClient();
@@ -82,12 +83,14 @@ export function useExpeditions() {
 
 			if (response) {
 				console.log("Success!", "expedition added successfully");
+				toast.success("expedition added successfully");
 				setIsLoading(false);
 				router.push("/dashboard");
 			}
 		} catch (error) {
 			if (error instanceof AxiosError) {
 				console.log("Error!", error?.response?.data?.message);
+				toast.error(error?.response?.data?.message);
 			} else {
 				console.error("An error occurred:", error);
 			}
@@ -121,13 +124,15 @@ export function useExpeditions() {
 			});
 
 			if (response.success) {
-				console.log("Success!", "Product added successfully");
+				console.log("Success!", "Update successfully");
+				toast.success("expedition update successfully");
 				setIsLoading(false);
 				router.push("/dashboard");
 			}
 		} catch (error) {
 			if (error instanceof AxiosError) {
 				console.log("Error!", error?.response?.data?.message);
+				toast.error(error?.response?.data?.message);
 			} else {
 				console.error("An error occurred:", error);
 			}
@@ -148,14 +153,16 @@ export function useExpeditions() {
 	const onDeleteItem = async (id: string) => {
 		try {
 			const response = await deletePostMutation.mutateAsync(
-				`${process.env.NEXT_PUBLIC_API_URI}expedition/update/${id}`,
+				`${process.env.NEXT_PUBLIC_API_URI}expedition/delete/${id}`,
 			);
 			if (response) {
-				console.log("Success!", "Product added successfully");
+				console.log("Success!", "Delete successfully");
+				toast.success("expedition delete successfully");
 			}
 		} catch (error) {
 			if (error instanceof AxiosError) {
 				console.log("Error!", error?.response?.data?.message);
+				toast.error(error?.response?.data?.message);
 			} else {
 				console.error("An error occurred:", error);
 			}

@@ -5,6 +5,7 @@ import ExpeditionCard, { Expedition } from "../components/ExpeditionCard";
 import { ExpeditionFilters } from "../components/ExpeditionFilters";
 import { useExpeditions } from "./useExpeditions";
 import Head from "next/head";
+import { useBookings } from "../(booking)/booking/useBookings";
 
 const { Title } = Typography;
 
@@ -20,6 +21,8 @@ export default function Home() {
 		priceRange,
 		handlePriceRangeChange,
 	} = useExpeditions();
+
+	const { addToBook } = useBookings();
 
 	return (
 		<>
@@ -43,7 +46,7 @@ export default function Home() {
 					<Row gutter={[16, 16]}>
 						{data?.data?.map((expedition: Expedition) => (
 							<Col xs={24} sm={12} lg={8} key={expedition._id}>
-								<ExpeditionCard expedition={expedition} />
+								<ExpeditionCard expedition={expedition} addToBook={addToBook} />
 							</Col>
 						))}
 					</Row>

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import type React from "react";
@@ -14,8 +15,14 @@ export interface Expedition {
 	availableSeats: number;
 }
 
-const ExpeditionCard: React.FC<{ expedition: Expedition }> = ({
+interface ExpeditionCardProps {
+	expedition: Expedition;
+	addToBook: (e: any, expeditionId: string) => void;
+}
+
+const ExpeditionCard: React.FC<ExpeditionCardProps> = ({
 	expedition,
+	addToBook,
 }) => (
 	<Card
 		title={expedition.name}
@@ -32,7 +39,11 @@ const ExpeditionCard: React.FC<{ expedition: Expedition }> = ({
 		<p>
 			<Text strong>Available Seats:</Text> {expedition.availableSeats}
 		</p>
-		<Button type="primary" disabled={expedition.availableSeats === 0}>
+		<Button
+			type="primary"
+			disabled={expedition.availableSeats === 0}
+			onClick={(e) => addToBook(e, expedition._id)}
+		>
 			{expedition.availableSeats === 0 ? "Fully Booked" : "Book Now"}
 		</Button>
 	</Card>
