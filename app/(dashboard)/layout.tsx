@@ -3,15 +3,15 @@
 import { ReactNode } from "react";
 import Navbar from "../components/navbar/navbar";
 import MainLayout from "@/layouts/layout";
-import ProtectedRoute from "@/lib/ProtectedRoute";
+import ProtectedAdminRoute from "@/lib/ProtectedAdminRoute";
 
 export default function CommonLayout({ children }: { children: ReactNode }) {
 	return (
-		<ProtectedRoute>
+		<ProtectedAdminRoute>
 			<MainLayout>
 				<Navbar />
 				{children}
 			</MainLayout>
-		</ProtectedRoute>
+		</ProtectedAdminRoute>
 	);
 }

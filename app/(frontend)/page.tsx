@@ -4,6 +4,7 @@ import { Button, Spin, Row, Col, Typography } from "antd";
 import ExpeditionCard, { Expedition } from "../components/ExpeditionCard";
 import { ExpeditionFilters } from "../components/ExpeditionFilters";
 import { useExpeditions } from "./useExpeditions";
+import Head from "next/head";
 
 const { Title } = Typography;
 
@@ -21,41 +22,46 @@ export default function Home() {
 	} = useExpeditions();
 
 	return (
-		<div className="container mx-auto px-4 py-8">
-			<Title level={2} className="mb-6">
-				Expeditions
-			</Title>
+		<>
+			<Head>
+				<title>Expedition List</title>
+			</Head>
+			<div className="container mx-auto px-4 py-8">
+				<Title level={2} className="mb-6">
+					Expeditions
+				</Title>
 
-			<ExpeditionFilters
-				onSearch={handleSearch}
-				onDateChange={handleDateFilterChange}
-				onPriceRangeChange={handlePriceRangeChange}
-				keyword={keyword}
-				priceRange={priceRange}
-			/>
+				<ExpeditionFilters
+					onSearch={handleSearch}
+					onDateChange={handleDateFilterChange}
+					onPriceRangeChange={handlePriceRangeChange}
+					keyword={keyword}
+					priceRange={priceRange}
+				/>
 
-			<Spin spinning={isPending && data.data.length === 0}>
-				<Row gutter={[16, 16]}>
-					{data?.data?.map((expedition: Expedition) => (
-						<Col xs={24} sm={12} lg={8} key={expedition._id}>
-							<ExpeditionCard expedition={expedition} />
-						</Col>
-					))}
-				</Row>
-			</Spin>
+				<Spin spinning={isPending && data.data.length === 0}>
+					<Row gutter={[16, 16]}>
+						{data?.data?.map((expedition: Expedition) => (
+							<Col xs={24} sm={12} lg={8} key={expedition._id}>
+								<ExpeditionCard expedition={expedition} />
+							</Col>
+						))}
+					</Row>
+				</Spin>
 
-			{data.totalPages > currentPage && (
-				<div className="mt-8 flex justify-center">
-					<Button
-						onClick={handleLoadMore}
-						loading={isPending}
-						disabled={isPending}
-						size="large"
-					>
-						Load More
-					</Button>
-				</div>
-			)}
-		</div>
+				{data.totalPages > currentPage && (
+					<div className="mt-8 flex justify-center">
+						<Button
+							onClick={handleLoadMore}
+							loading={isPending}
+							disabled={isPending}
+							size="large"
+						>
+							Load More
+						</Button>
+					</div>
+				)}
+			</div>
+		</>
 	);
 }

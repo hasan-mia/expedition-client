@@ -1,3 +1,5 @@
+"use client";
+
 import React from "react";
 import { Input, DatePicker, Space, InputNumber } from "antd";
 import { SearchOutlined } from "@ant-design/icons";

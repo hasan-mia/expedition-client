@@ -1,20 +1,33 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
+import dayjs from "dayjs";
+
 import { useExpeditions } from "@/app/(frontend)/useExpeditions";
+import { DatePicker } from "antd";
 
 const CreateProduct = () => {
-	const { isLoading, initialState, handleInputChange, onCreateItem } =
-		useExpeditions();
+	const {
+		isLoading,
+		initialState,
+		setInitialState,
+		handleInputChange,
+		onCreateItem,
+	} = useExpeditions();
+
+	// Handle Date Change
+	const handleDateChange = (
+		date: dayjs.Dayjs | null,
+		dateString: string,
+		field: string,
+	) => {
+		setInitialState((prevState: any) => ({
+			...prevState,
+			[field]: date ? dayjs(date).toISOString() : "",
+		}));
+	};
 
 	console.log(initialState);
-
-	// name: data?.data?.name || "",
-	// 		destination: data?.data?.destination || "",
-	// 		price: data?.data?.price || 0,
-	// 		startDate: data?.data?.startDate || 0,
-	// 		endDate: data?.data?.endDate || 0,
-	// 		availableSeats: data?.data?.availableSeats || 0,
-	// 		totalSeats: data?.data?.totalSeats || 0,
 
 	return (
 		<div className="flex justify-center mt-5">
@@ -128,6 +141,43 @@ const CreateProduct = () => {
 											/>
 										</div>
 									</div>
+								</div>
+							</div>
+
+							<div className="flex gap-5 w-full">
+								<div className="flex-1">
+									<label className="block text-sm font-medium leading-6 text-black">
+										Start Date
+									</label>
+									<DatePicker
+										showTime
+										allowClear
+										onChange={(date, dateString) =>
+											handleDateChange(
+												date,
+												Array.isArray(dateString) ? dateString[0] : dateString,
+												"startDate",
+											)
+										}
+										className="w-full"
+									/>
+								</div>
+								<div className="flex-1">
+									<label className="block text-sm font-medium leading-6 text-black">
+										End Date
+									</label>
+									<DatePicker
+										showTime
+										allowClear
+										onChange={(date, dateString) =>
+											handleDateChange(
+												date,
+												Array.isArray(dateString) ? dateString[0] : dateString,
+												"endDate",
+											)
+										}
+										className="w-full"
+									/>
 								</div>
 							</div>
 

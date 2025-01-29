@@ -1,15 +1,33 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable react-hooks/exhaustive-deps */
 "use client";
-import React, { useEffect } from "react";
-import { Skeleton } from "antd";
+import React, { use, useEffect } from "react";
+import { DatePicker, Skeleton } from "antd";
 import { useExpeditions } from "@/app/(frontend)/useExpeditions";
 import { useGet } from "@/config/api";
+import dayjs from "dayjs";
 
-const UpdateExpedition = ({ params }: { params: { id: string } }) => {
+type Params = Promise<{ id: string }>;
+
+const UpdateExpedition = (props: { params: Params }) => {
+	const params = use(props.params);
+	const Id = params.id;
 	const { data, isPending } = useGet(
-		`${process.env.NEXT_PUBLIC_API_URI}expedition/${params.id}`,
-		"getSignleProduct",
+		`${process.env.NEXT_PUBLIC_API_URI}expedition/${Id}`,
+		"single",
 	);
+
+	// Handle Date Change
+	const handleDateChange = (
+		date: dayjs.Dayjs | null,
+		dateString: string,
+		field: string,
+	) => {
+		setInitialState((prevState: any) => ({
+			...prevState,
+			[field]: date ? dayjs(date).toISOString() : "",
+		}));
+	};
 
 	const {
 		initialState,
@@ -164,6 +182,44 @@ const UpdateExpedition = ({ params }: { params: { id: string } }) => {
 									</div>
 								</div>
 							</div>
+
+							<div className="flex gap-5 w-full">
+								<div className="flex-1">
+									<label className="block text-sm font-medium leading-6 text-black">
+										Start Date
+									</label>
+									<DatePicker
+										showTime
+										allowClear
+										onChange={(date, dateString) =>
+											handleDateChange(
+												date,
+												Array.isArray(dateString) ? dateString[0] : dateString,
+												"startDate",
+											)
+										}
+										className="w-full"
+									/>
+								</div>
+								<div className="flex-1">
+									<label className="block text-sm font-medium leading-6 text-black">
+										End Date
+									</label>
+									<DatePicker
+										showTime
+										allowClear
+										onChange={(date, dateString) =>
+											handleDateChange(
+												date,
+												Array.isArray(dateString) ? dateString[0] : dateString,
+												"endDate",
+											)
+										}
+										className="w-full"
+									/>
+								</div>
+							</div>
+
 							<div className="flex w-full justify-center py-2">
 								<button
 									type="submit"
