@@ -1,5 +1,4 @@
 "use client";
-
 import React from "react";
 import { Button, Spin, Row, Col, Typography } from "antd";
 import ExpeditionCard, { Expedition } from "../components/ExpeditionCard";

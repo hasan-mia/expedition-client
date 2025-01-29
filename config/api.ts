@@ -89,6 +89,26 @@ export function deleteMutationConfig(queryClient: any, key: any) {
 	};
 }
 
+// CREATE JSON METHOD CONFIGURATION
+export function createJsonMutationConfig(queryClient: any, key: string) {
+	return {
+		mutationFn: async ({ url, data }: MutationParameters) => {
+			const response = await http.post(url, data);
+			return response.data;
+		},
+		onSuccess: (data: any) => {
+			queryClient.invalidateQueries({ queryKey: [key] });
+			queryClient.setQueryData([key], (oldData: any) => {
+				if (!oldData || !oldData[key]) {
+					return oldData;
+				}
+				const newData = [...oldData[key], data.data];
+				return { ...oldData, [key]: newData };
+			});
+		},
+	};
+}
+
 // UPDATE METHOD CONFIGURATION JSON DATA
 export function updateJosnMutationConfig(queryClient: any, key: any) {
 	return {

@@ -1,5 +1,5 @@
 import { FaHome } from "react-icons/fa";
-import { BsShop } from "react-icons/bs";
+import { GrDashboard } from "react-icons/gr";
 
 export const menuItems = [
 	{
@@ -8,8 +8,8 @@ export const menuItems = [
 		icon: <FaHome />,
 	},
 	{
-		name: "Shops",
-		href: "/shops",
-		icon: <BsShop />,
+		name: "Dashboard",
+		href: "/dashboard",
+		icon: <GrDashboard />,
 	},
 ];
