@@ -3,15 +3,34 @@ import axios from "axios";
 import { useRouter } from "next/navigation";
 import { http } from "@/config/http";
 
+export type User = {
+	_id: string;
+	email: string;
+	role: string;
+	__v: number;
+};
+
+export type LoginResponse = {
+	response?: {
+		data: {
+			success: boolean;
+			message?: string;
+		};
+	};
+	message?: string;
+};
+
 export default function useAuth() {
-	const [user, setUser] = useState(null);
-	const [loading, setLoading] = useState(true);
+	const [user, setUser] = useState<User | null>(null); // Update the type of user
+	const [loading, setLoading] = useState<boolean>(true);
 	const router = useRouter();
 
 	const fetchUser = async () => {
 		try {
 			const response = await http.get("me");
-			setUser(response.data.data);
+			if (response.data?.data) {
+				setUser(response.data.data); // Safely set user only if data exists
+			}
 		} catch (error) {
 			console.error("Fetch user failed", error);
 			logout();
@@ -30,7 +49,10 @@ export default function useAuth() {
 		}
 	}, []);
 
-	const login = async (email: string, password: string) => {
+	const login = async (
+		email: string,
+		password: string,
+	): Promise<LoginResponse> => {
 		try {
 			const response = await http.post(
 				`${process.env.NEXT_PUBLIC_API_URI}signin`,
@@ -42,17 +64,24 @@ export default function useAuth() {
 					},
 				},
 			);
-			localStorage.setItem("accessToken", response.data.token);
-			http.defaults.headers.common[
-				"Authorization"
-			] = `Bearer ${response.data.token}`;
-			router.push("/");
+			const token = response.data.token;
+			if (token) {
+				localStorage.setItem("accessToken", token);
+				http.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+				router.push("/");
+				return { response: { data: { success: true } } };
+			}
+			return { message: "Invalid response from server." };
 		} catch (error) {
 			console.error("Login failed", error);
+			return { message: "Login failed" };
 		}
 	};
 
-	const register = async (email: string, password: string) => {
+	const register = async (
+		email: string,
+		password: string,
+	): Promise<LoginResponse> => {
 		try {
 			const response = await http.post(
 				`${process.env.NEXT_PUBLIC_API_URI}signup`,
@@ -66,8 +95,10 @@ export default function useAuth() {
 			);
 			console.log(response.data);
 			router.push("/");
+			return { response: { data: { success: true } } };
 		} catch (error) {
-			console.error("Login failed", error);
+			console.error("Registration failed", error);
+			return { message: "Registration failed" };
 		}
 	};
 

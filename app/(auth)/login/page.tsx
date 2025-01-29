@@ -1,16 +1,17 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useState, FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import { Alert, Spin } from "antd";
-import useAuth from "../hooks/useAuth";
+import useAuth, { LoginResponse } from "../hooks/useAuth";
 
 const LoginPage = () => {
 	const router = useRouter();
 	const { login, user, loading } = useAuth();
-	const [email, setEmail] = useState("");
-	const [password, setPassword] = useState("");
-	const [isLoading, setIsLoading] = useState(false);
-	const [error, setError] = useState("");
+	const [email, setEmail] = useState<string>("");
+	const [password, setPassword] = useState<string>("");
+	const [isLoading, setIsLoading] = useState<boolean>(false);
+	const [error, setError] = useState<string>("");
 
 	useEffect(() => {
 		if (!loading && user) {
@@ -26,16 +27,25 @@ const LoginPage = () => {
 		);
 	}
 
-	console.log(user);
-
-	const handleSubmit = async (e) => {
+	const handleSubmit = async (e: FormEvent) => {
 		e.preventDefault();
 		setError("");
 		setIsLoading(true);
-		const res = await login(email, password);
-		if (!res?.response?.data?.success || res?.message) {
-			setError(res?.response?.data?.message || res?.message);
+
+		try {
+			const res: LoginResponse = await login(email, password);
+
+			if (res?.response?.data?.success) {
+				router.push("/");
+			} else {
+				setError(
+					res?.response?.data?.message || res?.message || "Unknown error",
+				);
+			}
+		} catch (err) {
+			setError("An error occurred during login");
 		}
+
 		setIsLoading(false);
 	};
 
@@ -57,7 +67,7 @@ const LoginPage = () => {
 									value={email}
 									onChange={(e) => setEmail(e.target.value)}
 								/>
-								<span className="absolute bottom-0 left-0 h-[3px] w-full bg-[#02839f]transition-all duration-500 ease-out input-progress"></span>
+								<span className="absolute bottom-0 left-0 h-[3px] w-full bg-[#02839f] transition-all duration-500 ease-out input-progress"></span>
 							</div>
 						</div>
 						<div>
@@ -73,7 +83,7 @@ const LoginPage = () => {
 									value={password}
 									onChange={(e) => setPassword(e.target.value)}
 								/>
-								<span className="absolute bottom-0 left-0 h-[3px] w-full bg-[#02839f]transition-all duration-500 ease-out input-progress"></span>
+								<span className="absolute bottom-0 left-0 h-[3px] w-full bg-[#02839f] transition-all duration-500 ease-out input-progress"></span>
 							</div>
 						</div>
 

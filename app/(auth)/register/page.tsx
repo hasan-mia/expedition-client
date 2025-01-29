@@ -1,21 +1,22 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useState, FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import { Alert, Spin } from "antd";
-import useAuth from "../hooks/useAuth";
+import useAuth, { LoginResponse } from "../hooks/useAuth"; // Make sure to import LoginResponse
 
 const RegisterPage = () => {
 	const router = useRouter();
 	const { register, user, loading } = useAuth();
-	const [email, setEmail] = useState("");
-	const [password, setPassword] = useState("");
-	const [isLoading, setIsLoading] = useState(false);
-	const [error, setError] = useState("");
-	const [success, setSuccess] = useState("");
+	const [email, setEmail] = useState<string>("");
+	const [password, setPassword] = useState<string>("");
+	const [isLoading, setIsLoading] = useState<boolean>(false);
+	const [error, setError] = useState<string>("");
+	const [success, setSuccess] = useState<string>("");
 
 	useEffect(() => {
 		if (!loading && user) {
-			router.push("/");
+			router.push("/login");
 		}
 	}, [loading, user, router]);
 
@@ -27,17 +28,26 @@ const RegisterPage = () => {
 		);
 	}
 
-	const handleSubmit = async (e) => {
+	const handleSubmit = async (e: FormEvent) => {
 		e.preventDefault();
 		setError("");
+		setSuccess("");
 		setIsLoading(true);
-		const res = await register(email, password);
-		console.log(res);
-		if (!res?.response?.data?.success || res?.message) {
-			setError(res?.response?.data?.message || res?.message);
-		} else {
-			setSuccess(res.response.data.message);
+
+		try {
+			const res: LoginResponse = await register(email, password);
+			console.log(res);
+			if (!res?.response?.data?.success || res?.message) {
+				setError(
+					res?.response?.data?.message || res?.message || "Unknown error",
+				);
+			} else {
+				setSuccess(res.response.data.message || "Registration successful!");
+			}
+		} catch (err) {
+			setError("An unexpected error occurred during registration");
 		}
+
 		setIsLoading(false);
 	};
 
@@ -61,7 +71,7 @@ const RegisterPage = () => {
 									value={email}
 									onChange={(e) => setEmail(e.target.value)}
 								/>
-								<span className="absolute bottom-0 left-0 h-[3px] w-full bg-[#02839f]transition-all duration-500 ease-out input-progress"></span>
+								<span className="absolute bottom-0 left-0 h-[3px] w-full bg-[#02839f] transition-all duration-500 ease-out input-progress"></span>
 							</div>
 						</div>
 						<div>
@@ -77,7 +87,7 @@ const RegisterPage = () => {
 									value={password}
 									onChange={(e) => setPassword(e.target.value)}
 								/>
-								<span className="absolute bottom-0 left-0 h-[3px] w-full bg-[#02839f]transition-all duration-500 ease-out input-progress"></span>
+								<span className="absolute bottom-0 left-0 h-[3px] w-full bg-[#02839f] transition-all duration-500 ease-out input-progress"></span>
 							</div>
 						</div>
 
@@ -106,7 +116,7 @@ const RegisterPage = () => {
 										<span>Processing...</span>
 									</div>
 								) : (
-									"Register In"
+									"Register"
 								)}
 							</button>
 						</div>

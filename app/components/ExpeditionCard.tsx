@@ -1,9 +1,7 @@
 import type React from "react";
 import { Card, Typography, Button, message } from "antd";
-import { useAuth } from "@/lib/AuthProvider/page";
 
 const { Text } = Typography;
-
 interface ExpeditionProps {
 	expedition: {
 		_id: string;
@@ -17,8 +15,6 @@ interface ExpeditionProps {
 }
 
 const ExpeditionCard: React.FC<ExpeditionProps> = ({ expedition }) => {
-	const { user } = useAuth();
-
 	const bookExpedition = async () => {
 		try {
 			const response = await fetch(
@@ -27,7 +23,7 @@ const ExpeditionCard: React.FC<ExpeditionProps> = ({ expedition }) => {
 					method: "POST",
 					headers: {
 						"Content-Type": "application/json",
-						Authorization: `Bearer ${user}`,
+						Authorization: `Bearer token`,
 					},
 					body: JSON.stringify({ expeditionId: expedition._id }),
 				},
