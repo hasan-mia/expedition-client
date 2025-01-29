@@ -1,11 +1,9 @@
-"use client";
-import { FaFileInvoice, FaHome, FaShoppingCart } from "react-icons/fa";
-import { GrUnorderedList } from "react-icons/gr";
+import { FaHome } from "react-icons/fa";
 import { BsShop } from "react-icons/bs";
 
 export const menuItems = [
 	{
-		name: "Dashboard",
+		name: "Home",
 		href: "/",
 		icon: <FaHome />,
 	},
@@ -13,20 +11,5 @@ export const menuItems = [
 		name: "Shops",
 		href: "/shops",
 		icon: <BsShop />,
-	},
-	{
-		name: "Products",
-		href: "/products",
-		icon: <FaShoppingCart />,
-	},
-	{
-		name: "Orders",
-		href: "/orders",
-		icon: <GrUnorderedList />,
-	},
-	{
-		name: "Invoices",
-		href: "/invoices",
-		icon: <FaFileInvoice />,
 	},
 ];
