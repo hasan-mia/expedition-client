@@ -1,12 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
-
+import React, { Suspense, useState } from "react";
 import { Alert, Button } from "antd";
 import { useRouter, useSearchParams } from "next/navigation";
-import React, { useState } from "react";
 import useAuth, { LoginResponse } from "../hooks/useAuth";
-import { AxiosError } from "axios";
 
 const VerifyPage = () => {
 	const searchParams = useSearchParams();
@@ -44,7 +41,7 @@ const VerifyPage = () => {
 	return (
 		<div className="min-h-screen min-w-[100vw] flex justify-center items-center">
 			<Button type="primary" size="large" onClick={(e) => handleSubmit(e)}>
-				{isLoading ? "Please wait" : "varify"}
+				{isLoading ? "Please wait" : "Verify"}
 			</Button>
 			{error && (
 				<Alert message={error} type="error" showIcon className="mt-4" />
@@ -53,4 +50,10 @@ const VerifyPage = () => {
 	);
 };
 
-export default VerifyPage;
+const SuspendedVerifyPage = () => (
+	<Suspense fallback={<div>Loading...</div>}>
+		<VerifyPage />
+	</Suspense>
+);
+
+export default SuspendedVerifyPage;
