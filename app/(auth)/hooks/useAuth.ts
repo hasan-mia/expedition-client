@@ -1,3 +1,4 @@
+"use client";
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { useRouter } from "next/navigation";
@@ -21,7 +22,7 @@ export type LoginResponse = {
 };
 
 export default function useAuth() {
-	const [user, setUser] = useState<User | null>(null); // Update the type of user
+	const [user, setUser] = useState<User | null>(null);
 	const [loading, setLoading] = useState<boolean>(true);
 	const router = useRouter();
 
